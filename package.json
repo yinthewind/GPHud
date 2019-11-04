@@ -1,0 +1,24 @@
+{
+  "name": "gphud",
+  "version": "1.0.0",
+  "description": "Global Poker Hud",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yinthewind/GPHud.git"
+  },
+  "keywords": [
+    "nlhm",
+    "poker",
+    "hud"
+  ],
+  "author": "per",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yinthewind/GPHud/issues"
+  },
+  "homepage": "https://github.com/yinthewind/GPHud#readme"
+}
