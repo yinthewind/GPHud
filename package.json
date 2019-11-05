@@ -4,7 +4,8 @@
   "description": "Global Poker Hud",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/yinthewind/GPHud/issues"
   },
-  "homepage": "https://github.com/yinthewind/GPHud#readme"
+  "homepage": "https://github.com/yinthewind/GPHud#readme",
+  "devDependencies": {
+    "copy-webpack-plugin": "^5.0.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {}
 }
