@@ -1,27 +1,37 @@
-const tableContainer = document.getElementsByClassName('table-view-container')[0];
-const config = { childList: true };
+'use strict';
+export { monitorTableContainer };
 
-const tableActionParser = function(mutationList, observer) {
+let tableActionParser = function(mutationList, observer) {
 	for(let mutation of mutationList) {
+		if (mutation.target.classList.contains('time')) {
+			return;
+		}
+		//let action = parseAction(mutation);
 		console.log(mutation);
 	}
 };
 
-const observeTable = function(tableId) {
+let monitorTable = function(tableId) {
 	let table = document.getElementById(tableId);
 	let config = { childList: true, subtree: true };
 
-	const observer = new MutationObserver(tableActionParser);
+	let observer = new MutationObserver(tableActionParser);
 	observer.observe(table, config);
-}
+};
 
-const observer = new MutationObserver(function(mutationList, observer) {
+let observer = new MutationObserver(function(mutationList, observer) {
 	for(let mutation of mutationList) {
 		for(let node of mutation.addedNodes) {
 			if (node.classList.contains('table-container')) {
-				observeTable(node.id);
+				// new table found
+				monitorTable(node.id);
 			}
 		};
 	}
 });
-observer.observe(tableContainer, config);
+
+const monitorTableContainer = function(tableContainer) {
+
+	let config = { childList: true };
+	observer.observe(tableContainer, config);
+};

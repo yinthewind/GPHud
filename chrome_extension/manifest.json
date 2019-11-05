@@ -10,7 +10,9 @@
   "content_scripts": [{
     "matches": ["https://play.globalpoker.com/*"],
     "run_at": "document_idle",
-    "js": ["tableContainerMonitor.js"]
+    "js": [
+		"inject.js"
+	]
   }],
   "browser_action": {},
   "manifest_version": 2
