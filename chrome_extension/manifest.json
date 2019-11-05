@@ -11,8 +11,8 @@
     "matches": ["https://play.globalpoker.com/*"],
     "run_at": "document_idle",
     "js": [
-		"inject.js"
-	]
+      "inject.js"
+    ]
   }],
   "browser_action": {},
   "manifest_version": 2
