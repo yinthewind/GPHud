@@ -8,7 +8,7 @@
     "tabs"
   ],
   "content_scripts": [{
-    "matches": ["https://play.globalpoker.com/"],
+    "matches": ["https://play.globalpoker.com/*"],
     "run_at": "document_idle",
     "js": ["contentScript.js"]
   }],
