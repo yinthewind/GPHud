@@ -4,7 +4,7 @@
   "description": "Global Poker Hud",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
     "build": "npx webpack --config webpack.config.js"
   },
   "repository": {

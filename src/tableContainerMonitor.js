@@ -40,19 +40,7 @@ let tableActionParser = function(mutationList, observer) {
 			});
 		}
 
-		//console.log(mutation.target.addedNodes);
-		//console.log(xmlDict);
 		chrome.runtime.sendMessage(JSON.stringify(xmlDict));
-
-		/*
-		let parser = new DOMParser();
-		let target = parser.parseFromString(xmlDict.target, 'text/html').body.firstElementChild;
-		console.log(target);
-		for(let addedNode of xmlDict.added) {
-			let node = parser.parseFromString(addedNode).body.firstElementChild;
-			console.log(node);
-		}
-		*/
 	}
 };
 

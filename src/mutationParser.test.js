@@ -2,12 +2,18 @@
 
 var fs = require('fs');
 var path = require('path');
-var filePath = path.join(__dirname, 'sampleHand.txt');
+var filePath = path.join(__dirname, './sampleHandsShort.txt');
+import { parseMutation } from './mutationParser.js';
 
-fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
-    if (!err) {
-		console.log(data);
-    } else {
-        console.log(err);
-    }
+test('parser', async (done) => {
+	fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
+		if (!err) {
+			for(let mutationStr of data.split('\n')) {
+				parseMutation(mutationStr);
+			}
+		} else {
+			console.log(err);
+		}
+		done();
+	});
 });
