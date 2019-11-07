@@ -7,6 +7,10 @@
     "storage",
     "tabs"
   ],
+  "background": {
+  	"scripts": ["background.js"],
+	"persistent": false
+  },
   "content_scripts": [{
     "matches": ["https://play.globalpoker.com/*"],
     "run_at": "document_idle",

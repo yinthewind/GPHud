@@ -15,3 +15,8 @@ const observer = new MutationObserver(function(mutationList, observer) {
 	}
 });
 observer.observe(app, config);
+
+/*
+let tableContainer = document.getElementsByClassName('table-view-container')[0];
+monitorTableContainer(tableContainer);
+*/

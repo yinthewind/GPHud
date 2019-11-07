@@ -1,7 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 
-module.exports = {
+const extensionConfig = {
  entry: './src/main.js',
  output: {
  	filename: 'inject.js',
@@ -20,5 +20,8 @@ module.exports = {
 		}
 	]
 },
+ watch: true,
  mode: 'development',
 };
+
+module.exports = [ extensionConfig];
