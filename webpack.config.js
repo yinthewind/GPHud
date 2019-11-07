@@ -12,5 +12,13 @@ module.exports = {
 		{ from: 'chrome_extension' }
 	]),
  ],
+ module: {
+	rules: [
+		{
+			test: /.js$/,
+			loader: 'babel-loader'
+		}
+	]
+},
  mode: 'development',
 };
