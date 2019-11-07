@@ -1,4 +1,4 @@
-import { parseHandRecord } from './handRecordParser';
+import { HandRecordParser } from './handRecordParser';
 
 const DEFAULT_INPUT = {
   id: 1572835265533,
@@ -83,8 +83,12 @@ const DEFAULT_OUTPUT = {
 };
 
 describe('handRecordParser unit test', () => {
+  let handRecordParser;
+  beforeEach(() => {
+    handRecordParser = new HandRecordParser();
+  });
 
   test('should return correct stats', () => {
-    expect(parseHandRecord(DEFAULT_INPUT)).toEqual(DEFAULT_OUTPUT);
+    expect(handRecordParser.parseHandRecord(DEFAULT_INPUT)).toEqual(DEFAULT_OUTPUT);
   });
 });
