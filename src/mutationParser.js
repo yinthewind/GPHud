@@ -1,8 +1,8 @@
 'use strict';
 
+const cardRe = /card-[2-9akqjt][shdc]/;
 const util = require('util');
-export { parseMutation };
-
+export { parseMutation }; 
 const parseMutation = (mutationStr) => {
 	var mutationDict;
 
@@ -69,27 +69,65 @@ let actionTextProcessor = (data) => {
 	};
 }
 
-let cardsContainerPlayerProcessor = (data) => {
+let cardsContainerProcessor = (data) => {
 
 	let cardSpan = data.target.querySelector('span.skin__card-image');
 	if (!cardSpan) {
 		return;
 	}
-	if (cardSpan.classList.contains('card-back')) {
-		return;
-	}
 	for(let cls of cardSpan.classList) {
-		if (cls.startsWith('card-')) {
+		if (cardRe.test(cls)) {
 			return cls;
 		}
 	}
 	return;
 }
 
+let communityCardsProcessor = (data) => {
+	
+	let communityCardProcessor = (node) => {
+		let span = node.querySelector('span.skin__card-image');
+		for(let cls of span.classList) {
+			if (cardRe.test(cls)) {
+				return cls;
+			}
+		}
+		return 'card-err';
+	}
+
+	if (!data.added) {
+		return;
+	}
+	
+	let cards = [];
+	for(let node of data.added) {
+		let card = communityCardProcessor(node);
+		cards.push(card);
+	}
+
+	if (cards.length) {
+		return cards;
+	}
+	return null;
+}
+
+let mainPotProcessor = (data) => {
+	
+	if (!data.added || data.added.length != 1) {
+		return;
+	}
+
+	let span = data.added[0].querySelector('span.pot-value');
+	let potValue = span.textContent;
+	return potValue;
+}
+
 let processors = {
-	//'seat-balance': seatBalanceProcessor,
-	//'action-text': actionTextProcessor,
-	'cards-container': cardsContainerPlayerProcessor,
+	'seat-balance': seatBalanceProcessor,
+	'action-text': actionTextProcessor,
+	'cards-container': cardsContainerProcessor,
+	'community-cards': communityCardsProcessor,
+	'main-pot': mainPotProcessor,
 };
 
 const parseMutationNodes = (data) => {
