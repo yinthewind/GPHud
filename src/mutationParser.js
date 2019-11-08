@@ -1,9 +1,8 @@
 'use strict';
 
-const cardRe = /card-[2-9akqjt][shdc]/;
 const util = require('util');
 export { parseMutation }; 
-import { Hand } from './handRecord.js';
+import { actionTypes, cardRe } from './constants.js';
 
 const parseMutation = (mutationStr) => {
 	var mutationDict;
@@ -25,7 +24,7 @@ const parseMutation = (mutationStr) => {
 		added.push(node);
 	}
 
-	let action = parseMutationNodes({
+	return parseMutationNodes({
 		target: target,
 		parent: parent,
 		added: added,
@@ -59,12 +58,12 @@ let actionTextProcessor = (data) => {
 	if (!data.parent) {
 		return;
 	}
-	//console.log(data.parent.outerHTML);
 	let player = data.parent.querySelector('div.player-name').textContent.trim();
 	let seatBalance = data.parent.querySelector('div.seat-balance').textContent.trim();
 	let actionAmount = data.parent.querySelector('div.action-amount').textContent.trim();
 
 	return {
+		type: actionTypes.PLAYER_ACTION,
 		player: player,
 		action: action,
 		actionAmount: actionAmount,
@@ -89,7 +88,13 @@ let cardsContainerProcessor = (data) => {
 
 	for(let node of data.added) {
 		let card = singleCardProcessor(node);
-		return card;
+		if (!card) {
+			return;
+		}
+		return {
+			type: actionTypes.HOLE_CARD,
+			card: card,
+		}
 	}
 }
 
@@ -100,7 +105,14 @@ let communityCardsProcessor = (data) => {
 	}
 	
 	for(let node of data.added) {
-		return singleCardProcessor(node);
+		let card = singleCardProcessor(node);
+		if (!card) {
+			return;
+		}
+		return {
+			type: actionTypes.COMMUNITY_CARD,
+			card: card,
+		}
 	}
 }
 
@@ -110,11 +122,39 @@ let mainPotProcessor = (data) => {
 		return;
 	}
 
-	let span = data.added[0].querySelector('span.pot-value');
-	let potValue = span.textContent;
+	let potValue = data.added[0].querySelector('span.pot-value').textContent;
 	return {
-		pot:  potValue,
+		type: actionTypes.POT,
+		value:  potValue,
 	};
+}
+
+let tableEventLogProcessor = (data) => {
+	
+	if (!data.added || data.added.length != 1) {
+		return;
+	}
+
+	let newNode = data.added[0].querySelector('div');
+	if (newNode.classList.contains('hand-started')) {
+		let handId = newNode.textContent.split(':')[1];
+		return {
+			type: actionTypes.HAND_START,
+			handId: handId,
+		}
+	} else {
+
+		if (!newNode.querySelector('span.chat-player-name')) {
+			console.log(newNode.outerHTML);
+		}
+		let winner = newNode.querySelector('span.chat-player-name').textContent
+		let amount = newNode.textContent.split(' ').pop();
+		return {
+			type: actionTypes.HAND_END,
+			winner: winner,
+			amount: amount,
+		}
+	}
 }
 
 let processors = {
@@ -123,15 +163,14 @@ let processors = {
 	'cards-container': cardsContainerProcessor,
 	'community-cards': communityCardsProcessor,
 	'main-pot': mainPotProcessor,
+	'table-event-log': tableEventLogProcessor,
 };
 
 const parseMutationNodes = (data) => {
 	for(let [key, processor] of Object.entries(processors)) {
 		if(data.target.classList.contains(key)) {
-			let result = processor(data);
-			if (result) {
-				console.log(result);
-			}
+			let action = processor(data);
+			return action;
 		}
 	}
 }

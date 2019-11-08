@@ -1,6 +1,7 @@
 'use strict';
 export { monitorTableContainer };
 import { parseMutation } from './mutationParser.js';
+import { Hand } from './handRecord.js';
 
 let skipMutation = (mutation, blackList) => {
 	for(let className of blackList) {
@@ -11,6 +12,7 @@ let skipMutation = (mutation, blackList) => {
 	return false;
 }
 	
+var hand;
 let tableActionParser = function(mutationList, observer) {
 	for(let mutation of mutationList) {
 		if (skipMutation(mutation, [
@@ -40,14 +42,23 @@ let tableActionParser = function(mutationList, observer) {
 				xmlDict.added.push(added);
 			});
 		}
+		//console.log(mutation);
 
 		let msg = JSON.stringify(xmlDict);
 		chrome.runtime.sendMessage(msg);
 
 		let action = parseMutation(msg);
-		if (action) {
-			console.log(action);
+
+		if (hand == null) {
+			hand = new Hand();
 		}
+		let finished = hand.record(action);
+		if (finished) {
+			console.log(hand);
+			hand = null;
+		}
+		console.log(action);
+		console.log(hand);
 	}
 };
 
