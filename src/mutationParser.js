@@ -3,6 +3,8 @@
 const cardRe = /card-[2-9akqjt][shdc]/;
 const util = require('util');
 export { parseMutation }; 
+import { Hand } from './handRecord.js';
+
 const parseMutation = (mutationStr) => {
 	var mutationDict;
 
