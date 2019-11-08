@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var filePath = path.join(__dirname, './sampleHands.txt');
+var filePath = path.join(__dirname, './sampleHandsShort.txt');
 import { parseMutation } from './mutationParser.js';
 
 test('parser', async (done) => {

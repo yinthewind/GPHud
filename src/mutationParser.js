@@ -70,46 +70,36 @@ let actionTextProcessor = (data) => {
 	};
 }
 
-let cardsContainerProcessor = (data) => {
-
-	let cardSpan = data.target.querySelector('span.skin__card-image');
-	if (!cardSpan) {
-		return;
-	}
-	for(let cls of cardSpan.classList) {
+let singleCardProcessor = (node) => {
+	let span = node.querySelector('span.skin__card-image');
+	for(let cls of span.classList) {
 		if (cardRe.test(cls)) {
 			return cls;
 		}
 	}
-	return;
 }
 
-let communityCardsProcessor = (data) => {
-	
-	let communityCardProcessor = (node) => {
-		let span = node.querySelector('span.skin__card-image');
-		for(let cls of span.classList) {
-			if (cardRe.test(cls)) {
-				return cls;
-			}
-		}
-		return 'card-err';
-	}
+let cardsContainerProcessor = (data) => {
 
 	if (!data.added) {
 		return;
 	}
-	
-	let cards = [];
-	for(let node of data.added) {
-		let card = communityCardProcessor(node);
-		cards.push(card);
-	}
 
-	if (cards.length) {
-		return cards;
+	for(let node of data.added) {
+		let card = singleCardProcessor(node);
+		return card;
 	}
-	return null;
+}
+
+let communityCardsProcessor = (data) => {
+	
+	if (!data.added) {
+		return;
+	}
+	
+	for(let node of data.added) {
+		return singleCardProcessor(node);
+	}
 }
 
 let mainPotProcessor = (data) => {
