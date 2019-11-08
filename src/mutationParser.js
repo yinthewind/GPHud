@@ -6,6 +6,7 @@ export { parseMutation };
 const parseMutation = (mutationStr) => {
 	var mutationDict;
 
+	mutationDict = JSON.parse(mutationStr);
 	try {
 		mutationDict = JSON.parse(mutationStr);
 	} catch (err) {
@@ -119,7 +120,9 @@ let mainPotProcessor = (data) => {
 
 	let span = data.added[0].querySelector('span.pot-value');
 	let potValue = span.textContent;
-	return potValue;
+	return {
+		pot:  potValue,
+	};
 }
 
 let processors = {

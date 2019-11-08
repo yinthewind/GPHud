@@ -1,5 +1,6 @@
 'use strict';
 export { monitorTableContainer };
+import { parseMutation } from './mutationParser.js';
 
 let skipMutation = (mutation, blackList) => {
 	for(let className of blackList) {
@@ -40,7 +41,13 @@ let tableActionParser = function(mutationList, observer) {
 			});
 		}
 
-		chrome.runtime.sendMessage(JSON.stringify(xmlDict));
+		let msg = JSON.stringify(xmlDict);
+		chrome.runtime.sendMessage(msg);
+
+		let action = parseMutation(msg);
+		if (action) {
+			console.log(action);
+		}
 	}
 };
 
