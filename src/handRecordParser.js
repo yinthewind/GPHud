@@ -79,5 +79,43 @@ class HandRecordParser {
   
     return playerStats;
   }
+
+  combineStats(existing, added) {
+    if (existing.playerId !== added.playerId) {
+      return;
+    }
+
+    const res = Object.assign({}, existing);
+
+    for (let key in res) {
+      if (typeof res[key] === 'number' && typeof added[key] === 'number') {
+        res[key] += added[key];
+      }
+    }
+
+    return res;
+  }
+
+  parseAllHandRecords(handRecords) {
+    const statsList = [];
+    handRecords.forEach((handRecord) => {
+      statsList.push(this.parseHandRecord(handRecord));
+    });
+
+    const output = statsList.reduce((acc, stats) => {
+      for (let playerId in stats) {
+        const playerStats = stats[playerId];
+        if (acc[playerId]) {
+          const existingStats = acc[playerId];
+          acc[playerId] = this.combineStats(existingStats, playerStats);
+        } else {
+          acc[playerId] = playerStats;
+        }
+      }
+      return acc;
+    }, {});
+
+    return output;
+  }
 }
 

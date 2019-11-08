@@ -88,7 +88,60 @@ describe('handRecordParser unit test', () => {
     handRecordParser = new HandRecordParser();
   });
 
-  test('should return correct stats', () => {
+  test('parseHandRecord should return correct stats', () => {
     expect(handRecordParser.parseHandRecord(DEFAULT_INPUT)).toEqual(DEFAULT_OUTPUT);
+  });
+
+  test('parseAllHandRecords should return correct stats', () => {
+    expect(handRecordParser.parseAllHandRecords([DEFAULT_INPUT, DEFAULT_INPUT])).toEqual({
+      'p1': {
+        playerId: 'p1',
+        handsCount: 2,
+        vpip: 2,
+        pfr: 0,
+        pf3b: 0,
+        pf4b: 0
+      },
+      'p2': {
+        playerId: 'p2',
+        handsCount: 2,
+        vpip: 2,
+        pfr: 2,
+        pf3b: 2,
+        pf4b: 0
+      },
+      'p3': {
+        playerId: 'p3',
+        handsCount: 2,
+        vpip: 0,
+        pfr: 0,
+        pf3b: 0,
+        pf4b: 0
+      },
+      'p4': {
+        playerId: 'p4',
+        handsCount: 2,
+        vpip: 0,
+        pfr: 0,
+        pf3b: 0,
+        pf4b: 0
+      },
+      'p5': {
+        playerId: 'p5',
+        handsCount: 2,
+        vpip: 0,
+        pfr: 0,
+        pf3b: 0,
+        pf4b: 0
+      },
+      'p6': {
+        playerId: 'p6',
+        handsCount: 2,
+        vpip: 2,
+        pfr: 2,
+        pf3b: 0,
+        pf4b: 0
+      }
+    });
   });
 });

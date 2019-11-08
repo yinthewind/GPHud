@@ -1,5 +1,6 @@
 'use strict';
 export { PlayerStore };
+import { openDB } from 'idb';
 
 class PlayerStore {
   db;
@@ -9,91 +10,72 @@ class PlayerStore {
   }
 
   initDB() {
-    const request = indexedDB.open('GPHud');
-    request.onupgradeneeded = () => {
+    const open = indexedDB.open('GPHud');
+    open.onupgradeneeded = () => {
       // The database did not previously exist, so create object stores and indexes.
-      const db = request.result;
-      const store = db.createObjectStore("players", {keyPath: "playerId"});
+      const db = open.result;
+      db.createObjectStore("players", {keyPath: "playerId"});
     };
 
-    request.onsuccess = () => {
-      this.db = request.result;
+    open.onsuccess = () => {
+      const db = open.result;
+      db.close();
     }
   }
 
-  getAllPlayerStats(callback) {
-    const transaction = this.db.transaction(["players"], "readwrite");
-    const objectStore = transaction.objectStore("players");
-
-    const objectStoreRequest = objectStore.getAll();
-
-    objectStoreRequest.onsuccess = (event) => {
-      const myRecord = objectStoreRequest.result;
-      if (callback) {
-        callback(null, myRecord);
-      }
-    };
-    objectStoreRequest.onerror = function(event) {
-      if (callback) {
-        callback(objectStoreRequest.error, null);
-      }
-    };
+  async getAllPlayerStats() {
+    const db = await openDB('GPHud');
+    const tx = await db.transaction('players', 'readonly');
+    const store = tx.objectStore('players');
+    const allSavedItems = await store.getAll();
+    db.close();
+    return allSavedItems;
   }
 
-  getPlayerStats(playerId, callback) {
-    const transaction = this.db.transaction(["players"], "readwrite");
-    const objectStore = transaction.objectStore("players");
-
-    const objectStoreRequest = objectStore.get(playerId);
-
-    objectStoreRequest.onsuccess = (event) => {
-      const myRecord = objectStoreRequest.result;
-      if (callback) {
-        callback(null, myRecord);
-      }
-    };
-    objectStoreRequest.onerror = function(event) {
-      if (callback) {
-        callback(objectStoreRequest.error, null);
-      }
-    };
+  async getPlayerStatsById(playerId) {
+    const db = await openDB('GPHud');
+    const tx = await db.transaction('players', 'readonly');
+    const store = tx.objectStore('players');
+    const stats = await store.get(playerId);
+    db.close();
+    return stats;
   }
 
-  putPlayerStats(playerStats, callback) {
-    const transaction = this.db.transaction(["players"], "readwrite");
-    const objectStore = transaction.objectStore("players");
-
-    const objectStoreRequest = objectStore.put(playerStats);
-
-    objectStoreRequest.onsuccess = (event) => {
-      const myRecord = objectStoreRequest.result;
-      if (callback) {
-        callback(null, myRecord);
-      }
-    };
-    objectStoreRequest.onerror = function(event) {
-      if (callback) {
-        callback(objectStoreRequest.error, null);
-      }
-    };
+  async getPlayerStatsByIdList(playerIdList) {
+    const db = await openDB('GPHud');
+    const tx = await db.transaction('players', 'readonly');
+    const store = tx.objectStore('players');
+    const res = {};
+    for (let playerId of playerIdList) {
+      res[playerId] = await store.get(playerId);
+    }
+    db.close();
+    return res;
   }
 
-  deletePlayerStats(playerId, callback) {
-    const transaction = this.db.transaction(["players"], "readwrite");
-    const objectStore = transaction.objectStore("players");
+  async putPlayerStats(playerStats) {
+    const db = await openDB('GPHud');
+    const tx = await db.transaction('players', 'readwrite');
+    const store = tx.objectStore('players');
+    await store.put(playerStats);
+    db.close();
+  }
 
-    const objectStoreRequest = objectStore.delete(playerId);
+  async putPlayerStatsByList(playerStatsList) {
+    const db = await openDB('GPHud');
+    const tx = await db.transaction('players', 'readwrite');
+    const store = tx.objectStore('players');
+    for (let playerStats of playerStatsList) {
+      await store.put(playerStats);
+    }
+    db.close();
+  }
 
-    objectStoreRequest.onsuccess = (event) => {
-      const myRecord = objectStoreRequest.result;
-      if (callback) {
-        callback(null, myRecord);
-      }
-    };
-    objectStoreRequest.onerror = function(event) {
-      if (callback) {
-        callback(objectStoreRequest.error, null);
-      }
-    };
+  async deletePlayerStatsById(playerId) {
+    const db = await openDB('GPHud');
+    const tx = await db.transaction('players', 'readwrite');
+    const store = tx.objectStore('players');
+    await store.delete(playerId);
+    db.close();
   }
 }
