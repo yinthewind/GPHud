@@ -1,4 +1,5 @@
 'use strict';
+import { actionActions } from './constants';
 export { HandRecordParser };
 
 // const actions = ['SMALL_BLIND', 'BIG_BLIND', 'RAISE', 'CHECK', 'CALL', 'FOLD'];
@@ -6,19 +7,15 @@ export { HandRecordParser };
 class HandRecordParser {
   constructor() {}
 
-  initPlayerStats(seats) {
-    const stats = {};
-    seats.forEach(player => {
-      stats[player] = {
-        playerId: player,
-        handsCount: 1,
-        vpip: 0,
-        pfr: 0,
-        pf3b: 0,
-        pf4b: 0
-      };
-    });
-    return stats;
+  initPlayerStats(player) {
+    return {
+      playerId: player,
+      handsCount: 1,
+      vpip: 0,
+      pfr: 0,
+      pf3b: 0,
+      pf4b: 0
+    };
   }
 
   initHandState() {
@@ -28,14 +25,17 @@ class HandRecordParser {
   }
 
   parsePreFlopAction(actionItem, handState, stats) {
-    const { action, playerId } = actionItem;
-    const playerStats = stats[playerId];
+    const { action, player } = actionItem;
+    if (!stats[player]) {
+      stats[player] = this.initPlayerStats(player);
+    }
+    const playerStats = stats[player];
     switch (action) {
-      case 'BIG_BLIND':
+      case actionActions.BIG_BLIND:
         handState.betLevel++;
         break;
   
-      case 'RAISE':
+      case actionActions.RAISE:
         playerStats.vpip = 1;
         playerStats.pfr = 1;
         handState.betLevel++;
@@ -46,7 +46,7 @@ class HandRecordParser {
         }
         break;
   
-      case 'CALL':
+      case actionActions.CALL:
         playerStats.vpip = 1;
         break;
     
@@ -63,9 +63,7 @@ class HandRecordParser {
   }
 
   parseHandRecord(handRecord) {
-    // set up
-    const playerStats = this.initPlayerStats(handRecord.seats);
-  
+    const playerStats = {};
     // preflop
     this.parsePreFlopActions(handRecord.preflop_actions, playerStats);
   

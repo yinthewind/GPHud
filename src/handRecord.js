@@ -19,8 +19,8 @@ class Hand {
 		this.data = this.newHand();
 	}
 
-	newHand = () => {
-		this.data = {
+	newHand() {
+		return {
 			id: null,
 			stake: null,
 			timestamp: null,
@@ -51,8 +51,7 @@ class Hand {
 		}
 	}
 
-	record = (action) => {
-
+	record(action) {
 		if (!action) {
 			return;
 		}
@@ -92,6 +91,6 @@ class Hand {
 	}
 
 	// check if this is a complete and valid hand record
-	validate = () => {
+	validate() {
 	}
 }
