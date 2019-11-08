@@ -1,5 +1,5 @@
 'use strict';
-import { actionActions } from './constants';
+import { playerActionTypes } from './constants';
 export { HandRecordParser };
 
 // const actions = ['SMALL_BLIND', 'BIG_BLIND', 'RAISE', 'CHECK', 'CALL', 'FOLD'];
@@ -31,11 +31,11 @@ class HandRecordParser {
     }
     const playerStats = stats[player];
     switch (action) {
-      case actionActions.BIG_BLIND:
+      case playerActionTypes.BIG_BLIND:
         handState.betLevel++;
         break;
   
-      case actionActions.RAISE:
+      case playerActionTypes.RAISE:
         playerStats.vpip = 1;
         playerStats.pfr = 1;
         handState.betLevel++;
@@ -46,7 +46,7 @@ class HandRecordParser {
         }
         break;
   
-      case actionActions.CALL:
+      case playerActionTypes.CALL:
         playerStats.vpip = 1;
         break;
     
