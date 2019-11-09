@@ -74,8 +74,9 @@ let actionTextProcessor = (data) => {
 let singleCardProcessor = (node) => {
 	let span = node.querySelector('span.skin__card-image');
 	for(let cls of span.classList) {
-		if (cardRe.test(cls)) {
-			return cls;
+		let m = cls.match(cardRe);
+		if (m) {
+			return m[1];
 		}
 	}
 }
@@ -142,12 +143,11 @@ let tableEventLogProcessor = (data) => {
 			type: actionTypes.HAND_START,
 			handId: handId,
 		}
-	} else {
+	}
 
-		if (!newNode.querySelector('span.chat-player-name')) {
-			console.log(newNode.outerHTML);
-		}
-		let winner = newNode.querySelector('span.chat-player-name').textContent
+	let nameSpan = newNode.querySelector('span.chat-player-name');
+	if (nameSpan) {
+		let winner = nameSpan.textContent
 		let amount = newNode.textContent.split(' ').pop();
 		return {
 			type: actionTypes.HAND_END,
@@ -155,10 +155,54 @@ let tableEventLogProcessor = (data) => {
 			amount: amount,
 		}
 	}
+
+	let text = newNode.textContent;
+	if (!text || text.includes('More time')) {
+		return;
+	}
+
+	let cardGroup = newNode.querySelector('span.card-group');
+	if (cardGroup) {
+		let numNodes = cardGroup.querySelectorAll('span.card-str');
+		let suitNodes = cardGroup.querySelectorAll('span.log-card');
+
+		let nums = [];
+		for(let node of numNodes) {
+			nums.push(node.textContent.toLowerCase());
+		}
+		let suits = [];
+		for(let node of suitNodes) {
+			suits.push(node.classList[1])
+		}
+
+		let cards = nums.map((num, i) => {
+			return nums[i] + suits[i]
+		})
+		let nameAndHandRegex = /(.*) has ([A-Z ]*)/
+
+		if (nameAndHandRegex.test(text)) {
+			let match = text.match(nameAndHandRegex);
+			return {
+				type: actionTypes.SHOWDOWN,
+				player: match[1],
+				finalHand: match[2],
+				cards: cards,
+			}
+		}
+
+		let nameAndHoleCards = /(.*) shows /
+		let match = text.match(nameAndHoleCards);
+
+		return {
+			type: actionTypes.SHOWCARDS,
+			cards: cards,
+			player: match[1],
+		}
+	}
 }
 
 let processors = {
-	'seat-balance': seatBalanceProcessor,
+	//'seat-balance': seatBalanceProcessor,
 	'action-text': actionTextProcessor,
 	'cards-container': cardsContainerProcessor,
 	'community-cards': communityCardsProcessor,

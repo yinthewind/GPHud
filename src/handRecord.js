@@ -1,6 +1,6 @@
 'use strict';
 
-export { Hand };
+export { Hand, HandRecorder };
 import { actionTypes } from './constants.js';
 
 const stages = {
@@ -10,13 +10,40 @@ const stages = {
 	RIVER: 'river',
 }
 
+class HandRecorder {
+	hand;
+
+	constructor() {
+		this.hand = new Hand();
+	}
+
+	record(action) {
+
+		let finished = this.hand.record(action);
+
+		if (finished) {
+			let result = this.hand.data;
+			this.hand.reset();
+
+			if (this.hand.validate()) {
+				return result;
+			}
+		}
+	}
+}
+
 class Hand {
 	data;
-	stage = stages.PREFLOP;
+	stage;
 
 	constructor() {
 		console.log('new hand created');
+		this.reset();
+	}
+
+	reset() {
 		this.data = this.newHand();
+		this.stage = stages.PREFLOP;
 	}
 
 	newHand() {
@@ -43,8 +70,8 @@ class Hand {
 				actions: [],
 				cards: [],
 			},
-			showdown: null,
-			summary: null,
+			showdown: [],
+			showCards: [],
 			winner: null,
 			winningAmount: null,
 			pot: null,
@@ -57,7 +84,7 @@ class Hand {
 		}
 		
 		if (action.type == actionTypes.HAND_START) {
-			this.data = this.newHand();
+			this.reset();
 			this.data.id = action.handId;
 			return;
 		}
@@ -87,10 +114,15 @@ class Hand {
 
 		} else if (action.type == actionTypes.POT) {
 			this.data.pot = action.value;
+		} else if (action.type == actionTypes.SHOWDOWN) {
+			this.data.showdown.push(action);
+		} else if (action.type == actionTypes.SHOWCARDS) {
+			this.data.showCards.push(action);
 		}
 	}
 
 	// check if this is a complete and valid hand record
 	validate() {
+		return true;
 	}
 }

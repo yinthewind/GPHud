@@ -2,7 +2,7 @@
 
 export { cardRe, actionTypes, actionActions };
 
-const cardRe = /card-[2-9akqjt][shdc]/;
+const cardRe = /card-([2-9akqjt][shdc])/;
 
 const actionTypes = {
 	PLAYER_ACTION: 'playerAction',
@@ -11,6 +11,8 @@ const actionTypes = {
 	POT: 'pot',
 	HAND_START: 'handStart',
 	HAND_END: 'handEnd',
+	SHOWDOWN: 'showdown',
+	SHOWCARDS: 'showCards',
 };
 
 const actionActions = {

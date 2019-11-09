@@ -3,28 +3,46 @@ export { monitorTableContainer };
 import { parseMutation } from './mutationParser.js';
 import { Hand } from './handRecord.js';
 
+let match = (mutation) => {
+	let whiteList = [
+		'seat-balance',
+		'action-text',
+		'cards-container',
+		'community-cards',
+		'main-pot',
+		'table-event-log',
+	];
+
+	for(let cls of whiteList) {
+		if( mutation.target.classList.contains(cls)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 let skipMutation = (mutation, blackList) => {
 	for(let className of blackList) {
 		if (mutation.target.classList.contains(className)) {
 			return true;
 		}
-	};
-	return false;
+	}
 }
 	
 var hand;
 let tableActionParser = function(mutationList, observer) {
 	for(let mutation of mutationList) {
 		if (skipMutation(mutation, [
-			'time',
-			'seat-progressbar',
-			'canvas',
-			'avatar',
-			'fullstory-exclude',
-			'nano-slider',
-			'nano-pane',
-			'default-poker-table',
-		])) {
+		   'time',
+		   'seat-progressbar',
+		   'canvas',
+		   'avatar',
+		   'fullstory-exclude',
+		   'nano-slider',
+		   'nano-pane',
+		   'default-poker-table',
+	    ])) {
+		//if (!match(mutation)) {
 			return;
 		}
 
@@ -49,16 +67,9 @@ let tableActionParser = function(mutationList, observer) {
 
 		let action = parseMutation(msg);
 
-		if (hand == null) {
-			hand = new Hand();
-		}
-		let finished = hand.record(action);
-		if (finished) {
-			console.log(hand);
-			hand = null;
-		}
+		//console.log(hand);
+		console.log(mutation);
 		console.log(action);
-		console.log(hand);
 	}
 };
 
@@ -86,5 +97,5 @@ let observer = new MutationObserver(function(mutationList, observer) {
 
 const monitorTableContainer = function(tableContainer) {
 
-	observer.observe(tableContainer, { childList: true });
+	observer.observe(tableContainer, { childList: true, attributes: true });
 };

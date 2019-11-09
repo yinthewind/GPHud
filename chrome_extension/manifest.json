@@ -5,6 +5,7 @@
   "permissions": [
     "activeTab",
     "storage",
+	"downloads",
     "tabs"
   ],
   "background": {
