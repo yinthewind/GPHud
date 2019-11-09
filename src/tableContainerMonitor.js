@@ -3,6 +3,7 @@ export { monitorTableContainer };
 import { parseMutation } from './mutationParser.js';
 import { Hand } from './handRecord.js';
 
+// probably should use querySelector here
 let match = (mutation) => {
 	let whiteList = [
 		'seat-balance',
@@ -21,7 +22,17 @@ let match = (mutation) => {
 	return false;
 }
 
-let skipMutation = (mutation, blackList) => {
+let skipMutation = (mutation) => {
+	let blackList = [
+	   'time',
+	   'seat-progressbar',
+	   'canvas',
+	   'avatar',
+	   'fullstory-exclude',
+	   'nano-slider',
+	   'nano-pane',
+	   'default-poker-table',
+	];
 	for(let className of blackList) {
 		if (mutation.target.classList.contains(className)) {
 			return true;
@@ -32,19 +43,14 @@ let skipMutation = (mutation, blackList) => {
 var hand;
 let tableActionParser = function(mutationList, observer) {
 	for(let mutation of mutationList) {
-		if (skipMutation(mutation, [
-		   'time',
-		   'seat-progressbar',
-		   'canvas',
-		   'avatar',
-		   'fullstory-exclude',
-		   'nano-slider',
-		   'nano-pane',
-		   'default-poker-table',
-	    ])) {
-		//if (!match(mutation)) {
+		if (skipMutation(mutation)) {
 			return;
 		}
+		/*
+		if (!match(mutation)) {
+			return;
+		}
+		*/
 
 		let serializer = new XMLSerializer();
 		let targetStr = serializer.serializeToString(mutation.target);
@@ -60,7 +66,6 @@ let tableActionParser = function(mutationList, observer) {
 				xmlDict.added.push(added);
 			});
 		}
-		//console.log(mutation);
 
 		let msg = JSON.stringify(xmlDict);
 		chrome.runtime.sendMessage(msg);
@@ -70,6 +75,7 @@ let tableActionParser = function(mutationList, observer) {
 		//console.log(hand);
 		console.log(mutation);
 		console.log(action);
+
 	}
 };
 
