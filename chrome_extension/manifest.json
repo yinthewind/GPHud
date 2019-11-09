@@ -12,13 +12,17 @@
   	"scripts": ["background.js"],
 	"persistent": false
   },
-  "content_scripts": [{
+  "content_scripts": [ {
     "matches": ["https://play.globalpoker.com/*"],
     "run_at": "document_idle",
-    "js": [
-      "inject.js"
-    ]
+    "js": ["inject.js"]
+  },
+  {
+    "matches": ["https://play.globalpoker.com/*"],
+    "js":["overlay.bundle.js"],
+    "css":["overlay.css"]
   }],
+
   "browser_action": {},
   "manifest_version": 2
 }

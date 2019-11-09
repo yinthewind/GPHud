@@ -25,6 +25,8 @@
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.7.0",
     "@babel/plugin-transform-modules-commonjs": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
     "babel-loader": "^8.0.6",
     "copy-webpack-plugin": "^5.0.4",
     "jest": "^24.9.0",
@@ -32,6 +34,8 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "idb": "^4.0.5"
+    "idb": "^4.0.5",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0"
   }
 }
