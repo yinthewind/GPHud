@@ -1,0 +1,50 @@
+.overlay-window{
+	font-family: sans-serif;
+	background-color: black; 
+	color: white;
+	position: absolute;
+	top: 160%;
+	padding: 0.5em 0 0.5em 0;
+	font-size: 0.7em;
+}
+
+.overlay-active{
+	
+}
+
+.overlay-hidden{
+	display: none;
+}
+
+
+.overlay-window ul{
+	display: flex;
+	margin-block-start:0;
+	margin-block-end:0;
+	margin-inline-start:0;
+	margin-inline-end:0;
+	padding-inline-start: 1em;
+	padding-inline-end: 1em;
+	list-style-type: none;
+}
+
+.overlay-window li{
+	display: inline-block;
+
+}
+
+.overlay-window hr{
+	width: 90%;
+	margin:0.3em 0 0.3em 0;
+	border: 1px solid #5f5656;
+}
+
+.overlay-window li:not(:first-child)::before{
+	content: "/";
+}
+
+.overlay-window p{
+	display: inline;
+}
+
+.text-wrapper{display: flex;}
