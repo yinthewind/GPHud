@@ -31,7 +31,7 @@
     "copy-webpack-plugin": "^5.0.4",
     "jest": "^24.9.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "idb": "^4.0.5",
